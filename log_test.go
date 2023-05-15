@@ -3,7 +3,6 @@ package log
 import (
 	"github.com/harley9293/blotlog/formatter"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -26,7 +25,7 @@ func TestCoroutine(t *testing.T) {
 	}
 	wg.Wait()
 
-	body, err := ioutil.ReadFile("./log/debug.log")
+	body, err := os.ReadFile("./log/debug.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -67,7 +66,7 @@ func TestRotateHookNoPass(t *testing.T) {
 	Debug("test print1")
 	Error("test print1")
 
-	body, err := ioutil.ReadFile("./log/debug.log")
+	body, err := os.ReadFile("./log/debug.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -77,7 +76,7 @@ func TestRotateHookNoPass(t *testing.T) {
 		t.Fatalf("Debug line error, line=%d", len(lines))
 	}
 
-	body, err = ioutil.ReadFile("./log/error.log")
+	body, err = os.ReadFile("./log/error.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -95,7 +94,7 @@ func TestRotateHookWithPass(t *testing.T) {
 	Debug("test print2")
 	Error("test print2")
 
-	body, err := ioutil.ReadFile("./log/debug.log")
+	body, err := os.ReadFile("./log/debug.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -105,7 +104,7 @@ func TestRotateHookWithPass(t *testing.T) {
 		t.Fatalf("Debug line num error, line=%d", len(lines))
 	}
 
-	body, err = ioutil.ReadFile("./log/error.log")
+	body, err = os.ReadFile("./log/error.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -126,7 +125,7 @@ func TestChangeLevelAfterAddRotateHook(t *testing.T) {
 	Debug("test print3")
 	Error("test print3")
 
-	body, err := ioutil.ReadFile("./log/debug.log")
+	body, err := os.ReadFile("./log/debug.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}
@@ -136,7 +135,7 @@ func TestChangeLevelAfterAddRotateHook(t *testing.T) {
 		t.Fatalf("Debug line num error, line=%d", len(lines))
 	}
 
-	body, err = ioutil.ReadFile("./log/error.log")
+	body, err = os.ReadFile("./log/error.log")
 	if err != nil {
 		t.Fatalf("log file not exist, err=%s", err)
 	}

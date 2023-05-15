@@ -4,7 +4,7 @@ import (
 	"github.com/harley9293/blotlog/formatter"
 	"github.com/harley9293/blotlog/hook"
 	"github.com/sirupsen/logrus"
-	"io/ioutil"
+	"io"
 )
 
 var logger *logrus.Logger = nil
@@ -27,7 +27,7 @@ func SetLevel(level Level) {
 }
 
 func ConsoleOff() {
-	logger.SetOutput(ioutil.Discard)
+	logger.SetOutput(io.Discard)
 }
 
 func AddRotateHook(conf *RotateConf) {
