@@ -1,4 +1,6 @@
 # boltlog
+![](https://github.com/harley9293/blotlog/workflows/Go/badge.svg)
+[![codecov](https://codecov.io/gh/harley9293/blotlog/branch/master/graph/badge.svg?token=gLxJw9swlO)](https://codecov.io/gh/harley9293/blotlog)
 
 A simple log library written in go language, which outputs logs in the following format on the console by default
 
