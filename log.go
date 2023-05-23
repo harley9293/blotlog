@@ -12,9 +12,7 @@ var logger *logrus.Logger = nil
 
 func init() {
 	logger = logrus.New()
-	logger.SetFormatter(&formatter.LineFormatter{
-		Skip: 10,
-	})
+	logger.SetFormatter(&formatter.LineFormatter{})
 
 	logger.SetLevel(logrus.DebugLevel)
 }

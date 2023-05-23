@@ -1,11 +1,12 @@
 package hook
 
 import (
+	"time"
+
 	"github.com/harley9293/blotlog/formatter"
-	"github.com/lestrrat-go/file-rotatelogs"
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 var logLevels = map[logrus.Level]string{
@@ -35,9 +36,7 @@ func NewLevelRotateHook(l logrus.Level, path string, duration time.Duration, cou
 		}
 	}
 
-	rotateHook := lfshook.NewHook(writerMap, &formatter.LineFormatter{
-		Skip: 13,
-	})
+	rotateHook := lfshook.NewHook(writerMap, &formatter.LineFormatter{})
 
 	return rotateHook
 }

@@ -180,9 +180,7 @@ func TestCallerInfo(t *testing.T) {
 
 func reInit() {
 	logger = logrus.New()
-	logger.SetFormatter(&formatter.LineFormatter{
-		Skip: 10,
-	})
+	logger.SetFormatter(&formatter.LineFormatter{})
 
 	logger.SetLevel(logrus.DebugLevel)
 	ConsoleOff()

@@ -3,15 +3,14 @@ package formatter
 import (
 	"bytes"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
-type LineFormatter struct {
-	Skip int
-}
+type LineFormatter struct{}
 
 func (f *LineFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data := ""
@@ -20,7 +19,7 @@ func (f *LineFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	// level
 	data += "|" + strings.ToUpper(entry.Level.String())
 	// caller
-	data += "|" + findCaller(f.Skip)
+	data += "|" + findCaller()
 	// gid
 	data += "|" + fmt.Sprintf("gid:%s", strconv.FormatUint(getGid(), 10))
 	// message
@@ -28,42 +27,32 @@ func (f *LineFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return append([]byte(data), '\n'), nil
 }
 
-func findCaller(skip int) string {
-	file, line, pc := getCaller(skip)
-	fullFnName := runtime.FuncForPC(pc)
-
-	fnName := ""
-	if fullFnName != nil {
-		fnNameStr := fullFnName.Name()
-		parts := strings.Split(fnNameStr, ".")
-		fnName = parts[len(parts)-1]
-	}
-
-	if fnName == "0" {
-		fnName = "init"
-	}
-
-	tmp := strings.Split(file, "/")
-	return fmt.Sprintf("[%s:%d:%s]", tmp[len(tmp)-1], line, fnName)
-}
-
-func getCaller(skip int) (string, int, uintptr) {
-	pc, file, line, ok := runtime.Caller(skip)
-	if !ok {
-		return "", 0, pc
-	}
-	n := 0
-
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			n++
-			if n >= 2 {
-				file = file[i+1:]
-				break
+func findCaller() string {
+	pc := make([]uintptr, 20)
+	runtime.Callers(2, pc)
+	frames := runtime.CallersFrames(pc)
+	for {
+		frame, more := frames.Next()
+		if strings.Contains(frame.Function, "blotlog.") {
+			frame, _ = frames.Next()
+			fnName := ""
+			if fnName == "0" {
+				fnName = "init"
 			}
+			if frame.Func.Name() != "" {
+				parts := strings.Split(frame.Func.Name(), ".")
+				fnName = parts[len(parts)-1]
+			}
+			tmp := strings.Split(frame.File, "/")
+			return fmt.Sprintf("[%s:%d:%s]", tmp[len(tmp)-1], frame.Line, fnName)
+		}
+
+		if !more {
+			break
 		}
 	}
-	return file, line, pc
+
+	return ""
 }
 
 func getGid() uint64 {
