@@ -176,6 +176,46 @@ func TestCallerInfo(t *testing.T) {
 	}
 }
 
+func TestAddRotateHookWithErr(t *testing.T) {
+	reInit()
+	defer clear()
+	AddRotateHook(nil)
+}
+
+func TestInfo(t *testing.T) {
+	reInit()
+	defer clear()
+	AddRotateHook(&RotateConf{})
+	Info("test print5")
+
+	body, err := os.ReadFile("./log/info.log")
+	if err != nil {
+		t.Fatalf("log file not exist, err=%s", err)
+	}
+	infoStr := string(body)
+	lines := strings.Split(infoStr, "\n")
+	if len(lines) != 2 {
+		t.Fatalf("Info line num error, line=%d", len(lines))
+	}
+}
+
+func TestWarn(t *testing.T) {
+	reInit()
+	defer clear()
+	AddRotateHook(&RotateConf{})
+	Warn("test print6")
+
+	body, err := os.ReadFile("./log/warn.log")
+	if err != nil {
+		t.Fatalf("log file not exist, err=%s", err)
+	}
+	warnStr := string(body)
+	lines := strings.Split(warnStr, "\n")
+	if len(lines) != 2 {
+		t.Fatalf("Warn line num error, line=%d", len(lines))
+	}
+}
+
 // -------------------inner----------------------
 
 func reInit() {
