@@ -1,13 +1,15 @@
 package log
 
 import (
-	"github.com/harley9293/blotlog/formatter"
-	"github.com/sirupsen/logrus"
+	"bytes"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/harley9293/blotlog/formatter"
+	"github.com/sirupsen/logrus"
 )
 
 var wg sync.WaitGroup
@@ -143,6 +145,34 @@ func TestChangeLevelAfterAddRotateHook(t *testing.T) {
 	lines = strings.Split(errorStr, "\n")
 	if len(lines) != 3 {
 		t.Fatalf("Error line num error, line=%d", len(lines))
+	}
+}
+
+func TestCallerInfo(t *testing.T) {
+	reInit()
+	defer clear()
+	AddRotateHook(&RotateConf{})
+	buf := new(bytes.Buffer)
+	logger.SetOutput(buf)
+
+	Error("test print4")
+
+	if !strings.Contains(buf.String(), "[log_test.go:158:TestCallerInfo]") {
+		t.Fatalf("Caller info error, buf=%s", buf.String())
+	}
+
+	body, err := os.ReadFile("./log/error.log")
+	if err != nil {
+		t.Fatalf("log file not exist, err=%s", err)
+	}
+	errorStr := string(body)
+	lines := strings.Split(errorStr, "\n")
+	if len(lines) != 2 {
+		t.Fatalf("Error line num error, line=%d", len(lines))
+	}
+
+	if !strings.Contains(lines[0], "[log_test.go:158:TestCallerInfo]") {
+		t.Fatalf("Caller info error, line=%s", lines[0])
 	}
 }
 
