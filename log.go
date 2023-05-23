@@ -1,10 +1,11 @@
 package log
 
 import (
+	"io"
+
 	"github.com/harley9293/blotlog/formatter"
 	"github.com/harley9293/blotlog/hook"
 	"github.com/sirupsen/logrus"
-	"io"
 )
 
 var logger *logrus.Logger = nil
@@ -16,7 +17,6 @@ func init() {
 	})
 
 	logger.SetLevel(logrus.DebugLevel)
-	return
 }
 
 // -------------------config----------------------
